@@ -10,13 +10,9 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
     setLoading(true);
     const crawl = (user, allValues) => {
       if (!allValues) allValues = [];
-      
       for (var key in user) {
-
-          console.log(user[key])
-          
-          allValues.push(user[key])
-        
+        if (typeof user[key] === "object") crawl(user[key], allValues);
+        else allValues.push(user[key] + " ");
       }
       return allValues;
     };
@@ -24,11 +20,8 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
       const { data: users } = await retrieve();
       setOrigData(users);
       setFilteredData(users);
-     
       const searchInd = users.map(user => {
-        
         const allValues = crawl(user);
-       
         return { allValues: allValues.toString() };
       });
       setSearchIndex(searchInd);
